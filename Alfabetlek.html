@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alfabet Opplæringsapp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .letter-card {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.5s;
+        }
+        .letter-card:hover {
+            transform: scale(1.05);
+        }
+        .highlight-first-letter {
+            font-size: 1.5em;
+            color: red;
+            font-weight: bold;
+        }
+        .letter-overlay {
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 2em;
+            font-weight: bold;
+            color: red;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-blue-100 to-purple-100">
+    <div id="letterButtons" class="flex flex-wrap justify-center mb-4">
+        <!-- Bokstavknapper vil bli lagt til her av JavaScript -->
+    </div>
+    <div id="alphabetContainer" class="flex flex-col items-center">
+        <!-- Alfabet-kort vil bli lagt til her av JavaScript -->
+    </div>
+    <div class="flex mt-4 gap-4">
+        <button id="prevButton" class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-transform transform hover:scale-110 disabled:opacity-50" disabled>
+            <i class="fas fa-arrow-left"></i> Forrige
+        </button>
+        <button id="nextButton" class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-transform transform hover:scale-110 disabled:opacity-50">
+            Neste <i class="fas fa-arrow-right"></i>
+        </button>
+        <button id="speakButton" class="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition-transform transform hover:scale-110">
+            <i class="fas fa-volume-up"></i> Les opp
+        </button>
+    </div>
+
+    <script>
+        const alphabet = [
+        { letter: 'A', animal: 'Ape', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Ape.webp' },
+            { letter: 'B', animal: 'Bjørn', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Bj%C3%B8rn.webp' },
+            { letter: 'C', animal: 'Chimpanse', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Chimpanse.webp' },
+            { letter: 'D', animal: 'Drage', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Drage.webp' },
+            { letter: 'E', animal: 'Elg', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Elg.webp' },
+            { letter: 'F', animal: 'Flodhest', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Flodhest.webp' },
+            { letter: 'G', animal: 'Gaupe', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Gaupe.webp' },
+            { letter: 'H', animal: 'Hest', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Hest.webp' },
+            { letter: 'I', animal: 'Isbjørn', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Isbj%C3%B8rn.webp' },
+            { letter: 'J', animal: 'Jaguar', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Jaguar.webp' },
+            { letter: 'K', animal: 'Katt', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Katt.webp' },
+            { letter: 'L', animal: 'Løve', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/L%C3%B8ve.webp' },
+            { letter: 'M', animal: 'Mus', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Mus.webp' },
+            { letter: 'N', animal: 'Neshorn', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Neshorn.webp' },
+            { letter: 'O', animal: 'Otter', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Otter.webp' },
+            { letter: 'P', animal: 'Pingvin', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Pingvin.webp' },
+            { letter: 'Q', animal: 'Quokka', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Quokka.webp' },
+            { letter: 'R', animal: 'Rev', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Rev.webp' },
+            { letter: 'S', animal: 'Slange', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Slange.webp' },
+            { letter: 'T', animal: 'Tiger', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Tiger.webp' },
+            { letter: 'U', animal: 'Ugle', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Ugle.webp' },
+            { letter: 'V', animal: 'Vaskebjørn', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Vaskebj%C3%B8rn.webp' },
+            { letter: 'W', animal: 'Wallaby', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Wallaby.webp' },
+            { letter: 'X', animal: 'Xenopus', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Xenopus.webp' },
+            { letter: 'Y', animal: 'Yngel', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Yngel.webp' },
+            { letter: 'Z', animal: 'Zebra', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/Zebra.webp' },
+            { letter: 'Æ', animal: 'Ærfugl', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/%C3%86rfugl.webp' },
+            { letter: 'Ø', animal: 'Ørn', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/%C3%98rn.webp' },
+            { letter: 'Å', animal: 'Ål', image: 'https://raw.githubusercontent.com/Nihadkd/Alfabet-oppl-ring/201e628b974fef725d62125fcfebd67acb4c3d34/%C3%85l.webp' },
+        ];
+
+        let currentIndex = 0;
+
+        function showCard(index) {
+            const item = alphabet[index];
+            alphabetContainer.innerHTML = `
+                <div class="letter-card bg-gradient-to-r from-yellow-200 to-red-200 p-4 rounded-lg shadow-lg text-center">
+                    <div class="letter-overlay">${item.letter}</div>
+                    <img src="${item.image}" alt="${item.animal}" class="mx-auto mb-4 w-full max-w-sm h-auto rounded-lg shadow-md">
+                    <p class="text-2xl"><span class="highlight-first-letter">${item.animal.charAt(0)}</span>${item.animal.slice(1)}</p>
+                </div>
+            `;
+            document.getElementById('prevButton').disabled = index === 0;
+            document.getElementById('nextButton').disabled = index === alphabet.length - 1;
+        }
+
+        function createLetterButtons() {
+            const letterButtonsContainer = document.getElementById('letterButtons');
+            alphabet.forEach((item, index) => {
+                const button = document.createElement('button');
+                button.className = 'bg-blue-500 text-white px-2 py-1 m-1 rounded-full hover:bg-blue-600 transition-transform transform hover:scale-110';
+                button.textContent = item.letter;
+                button.addEventListener('click', () => {
+                    currentIndex = index;
+                    showCard(currentIndex);
+                });
+                letterButtonsContainer.appendChild(button);
+            });
+        }
+
+        document.getElementById('prevButton').addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                showCard(currentIndex);
+            }
+        });
+
+        document.getElementById('nextButton').addEventListener('click', () => {
+            if (currentIndex < alphabet.length - 1) {
+                currentIndex++;
+                showCard(currentIndex);
+            }
+        });
+
+        document.getElementById('speakButton').addEventListener('click', () => {
+            const item = alphabet[currentIndex];
+            const utterance = new SpeechSynthesisUtterance(`${item.letter} for ${item.animal}`);
+            utterance.lang = 'no-NO';
+            utterance.rate = 0.8; // Senk hastigheten på opplesingen
+            window.speechSynthesis.speak(utterance);
+        });
+
+        createLetterButtons();
+        showCard(currentIndex);
+    </script>
+</body>
+</html>
